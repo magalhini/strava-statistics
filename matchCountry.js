@@ -14,7 +14,8 @@ const getCountryFromCoords = (coords) => {
 const table = {
   CA: '🇨🇦',
   PT: '🇵🇹',
-  DE: '🇩🇪'
+  DE: '🇩🇪',
+  PL: '🇵🇱'
 };
 
 module.exports = { getCountryFromCoords, table }
