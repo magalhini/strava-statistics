@@ -11,12 +11,20 @@ const EMOJI_CONDITIONS = {
   9731: 'Snowstorm'
 };
 
-const getCondition = (name) => {
+const getHRData = ({has_heartrate, max_heartrate = 0, average_heartrate = 0}) => {
+  return {
+    maxHR: max_heartrate,
+    avgHR: average_heartrate
+  };
+}
+
+const getConditions = (name) => {
   const split = name.split(' ');
 
   return split.reduce((acc, char) => {
-    if (EMOJI_CONDITIONS[char.codePointAt(0)]) {
-      acc.push(EMOJI_CONDITIONS[char.codePointAt(0)]);
+    const charPoint = char.codePointAt(0);
+    if (EMOJI_CONDITIONS[charPoint]) {
+      acc.push(EMOJI_CONDITIONS[charPoint]);
     }
     return acc;
   }, []);
@@ -34,5 +42,6 @@ const updateTitle = (activity, newTitle) => {
 module.exports = {
   isEmoji,
   updateTitle,
-  getCondition
+  getConditions,
+  getHRData
 };

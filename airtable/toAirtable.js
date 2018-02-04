@@ -2,22 +2,13 @@ const authorize = require('../config').authorize;
 const env = require('dotenv').config({ path: '../.env' });
 const strava = require('strava-v3');
 const Airtable = require('airtable');
-const calc = require('../math/');
-const getConditions = require('../helpers/helpers').getCondition;
+const calc = require('../helpers/math');
+const stravaHelpers = require('../helpers/strava');
+const data = require('../data/');
 
-const base = new Airtable({apiKey: process.env.AIRTABLE_KEY}).base('appbnk2iyitU1firD');
-
-const BASES = Object.freeze({
-  WORKOUTS: 'Workouts'
-});
-
-const TYPES = Object.freeze({
-  0: 'Run',
-  1: 'Race',
-  2: 'Long Run',
-  3: 'Workout',
-  group: 'Group Run'
-});
+const base = new Airtable({ apiKey: process.env.AIRTABLE_KEY }).base('appbnk2iyitU1firD');
+const { getConditions, getHRData } = stravaHelpers;
+const { BASES, TYPES} = data;
 
 function getRunType(type, name) {
   const isGroup = name && name.indexOf('Group') > -1;
@@ -26,9 +17,10 @@ function getRunType(type, name) {
   ];
 }
 
-function stravaToAirTable() {
-  getFromStrava(5)
-    .then(insertNewRuns)
+function stravaToAirTable(howMany = 1) {
+  console.log(`Fetching last ${howMany} runs from Strava to Airtable...`);
+  getFromStrava(howMany)
+    .then(insertNewRuns);
 }
 
 function getFromStrava(max = 2) {
@@ -41,8 +33,11 @@ function getFromStrava(max = 2) {
 
 function insertNewRuns(runs) {
   const inserts = runs.map(run => {
-    const { id, name, distance, total_elevation_gain,
-      start_date, average_speed, workout_type, moving_time } = run;
+    const {
+      id, name, distance, total_elevation_gain,
+      start_date, average_speed, workout_type, moving_time,
+      has_heartrate, suffer_score
+    } = run;
 
       base(BASES.WORKOUTS).create({
         'ID': id,
@@ -53,7 +48,10 @@ function insertNewRuns(runs) {
         'Speed': calc.metersSecondToMinuteKm(average_speed),
         'Time': calc.secondsToClock(moving_time),
         'Date': start_date,
-        'Elevation': total_elevation_gain
+        'Elevation': total_elevation_gain,
+        'Average HR': getHRData(run).avgHR,
+        'Max HR': getHRData(run).maxHR,
+        'Suffer Score': suffer_score || 0,
       }, ((err, record) => {
         if (err) return console.log(err);
         console.log(`Record saved! ${record.getId()}, ${name}`);
@@ -61,5 +59,4 @@ function insertNewRuns(runs) {
   });
 }
 
-stravaToAirTable()
-console.log('Fetching runs from Strava to Airtable...');
+stravaToAirTable(10);

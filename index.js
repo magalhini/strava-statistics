@@ -31,8 +31,6 @@ function listAllActivities(max = 50) {
         new Date(payload[payload.length - 1].start_date)
       );
 
-      // getTopSufferScore(payload);
-
       const days = Math.round(diff.days());
       console.log(`Total elevation in the last ${days} days: ${Math.round(totalElevation)} meters`);
     } else {

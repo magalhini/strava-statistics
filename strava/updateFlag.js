@@ -1,11 +1,12 @@
-const authorize = require('./config').authorize;
-const env = require('dotenv').config();
-const updateTitle = require('./helpers/helpers').updateTitle;
-const isEmoji = require('./helpers/helpers').isEmoji;
 const PromiseThrottle = require('promise-throttle');
-const getCountryFromCoords = require('./matchCountry').getCountryFromCoords;
-const countryFlags = require('./matchCountry').table;
 const strava = require('strava-v3');
+
+const authorize = require('../config').authorize;
+const env = require('dotenv').config({ path: '../.env' });
+const updateTitle = require('../helpers/strava').updateTitle;
+const isEmoji = require('../helpers/strava').isEmoji;
+const getCountryFromCoords = require('../helpers/matchCountry').getCountryFromCoords;
+const countryFlags = require('../helpers/matchCountry').table;
 
 let promiseThrottle = new PromiseThrottle({
   requestsPerSecond: 1,           // up to 1 request per second

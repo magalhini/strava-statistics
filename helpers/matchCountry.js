@@ -15,7 +15,7 @@ const table = {
   CA: '🇨🇦',
   PT: '🇵🇹',
   DE: '🇩🇪',
-  PL: '🇵🇱'
+  PL: '🇵🇱',
 };
 
 module.exports = { getCountryFromCoords, table }
