@@ -4,7 +4,7 @@ const Units = Object.freeze({
 
 const metersSecondToMinuteKm = (ms) => {
   const pace = Units.mps / ms;
-  return `${Math.round(pace)}:${((pace % 1) * 1000 / Units.mps).toFixed(0)}`;
+  return `${Math.round(pace)}:${pad(((pace % 1) * 60).toFixed(0))}`;
 };
 
 const secondsToClock = (seconds) => {

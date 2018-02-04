@@ -5,6 +5,23 @@ const isEmoji = (char) => {
   return regex.test(char);
 };
 
+const EMOJI_CONDITIONS = {
+  10052: 'Snow',
+  127783: 'Rain',
+  9731: 'Snowstorm'
+};
+
+const getCondition = (name) => {
+  const split = name.split(' ');
+
+  return split.reduce((acc, char) => {
+    if (EMOJI_CONDITIONS[char.codePointAt(0)]) {
+      acc.push(EMOJI_CONDITIONS[char.codePointAt(0)]);
+    }
+    return acc;
+  }, []);
+};
+
 const updateTitle = (activity, newTitle) => {
   if (!activity || !newTitle) return null;
 
@@ -16,5 +33,6 @@ const updateTitle = (activity, newTitle) => {
 
 module.exports = {
   isEmoji,
-  updateTitle
+  updateTitle,
+  getCondition
 };
