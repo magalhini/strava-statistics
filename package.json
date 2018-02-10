@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:live": "nodemon --exec ./node_modules/.bin/ts-node -- ./src/**/*.ts"
   },
   "keywords": [],
   "author": "",
@@ -16,5 +17,10 @@
     "dotenv": "^4.0.0",
     "promise-throttle": "^0.3.1",
     "strava-v3": "^1.14.0"
+  },
+  "devDependencies": {
+    "@types/node": "^9.4.5",
+    "ts-node": "^4.1.0",
+    "typescript": "^2.7.1"
   }
 }
