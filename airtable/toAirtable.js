@@ -2,23 +2,34 @@ const authorize = require('../config').authorize;
 const env = require('dotenv').config({ path: '../.env' });
 const strava = require('strava-v3');
 const Airtable = require('airtable');
-const calc = require('../helpers/math');
+const helpers = require('../helpers/math');
 const stravaHelpers = require('../helpers/strava');
 const data = require('../data/');
+const defaults = require('./defaults');
 
 const base = new Airtable({ apiKey: process.env.AIRTABLE_KEY }).base('appbnk2iyitU1firD');
 const { getConditions, getHRData } = stravaHelpers;
-const { BASES, TYPES} = data;
+const { BASES, RUN_TYPES, EFFORT_TYPES } = data;
 
 function getRunType(type, name) {
   const isGroup = name && name.indexOf('Group') > -1;
   return [
-    ...(isGroup ? [TYPES['group']] : []), TYPES[type]
+    ...(isGroup ? [RUN_TYPES['group']] : []), RUN_TYPES[type]
   ];
 }
 
+function getRunEffort(name) {
+  const effort = helpers.getInBrackets(name);
+  return effort ? EFFORT_TYPES[effort] : null;
+}
+
+function getLocation(name) {
+  const customLocation = helpers.getInCurly(name);
+  return customLocation ? customLocation : defaults.location;
+}
+
 function stravaToAirTable(howMany = 1) {
-  console.log(`Fetching last ${howMany} runs from Strava to Airtable...`);
+  console.log(`Fetching last ${howMany} runs from Strava into Airtable...`);
   getFromStrava(howMany)
     .then(insertNewRuns);
 }
@@ -45,8 +56,10 @@ function insertNewRuns(runs) {
         'Conditions': getConditions(name),
         'Type': getRunType(workout_type, name),
         'Distance': Number((distance / 1000).toFixed(2)),
-        'Speed': calc.metersSecondToMinuteKm(average_speed),
-        'Time': calc.secondsToClock(moving_time),
+        'Speed': helpers.metersSecondToMinuteKm(average_speed),
+        'Time': helpers.secondsToClock(moving_time),
+        'Effort': getRunEffort(name),
+        'Where': getLocation(name),
         'Date': start_date,
         'Elevation': total_elevation_gain,
         'Average HR': getHRData(run).avgHR,
@@ -59,4 +72,4 @@ function insertNewRuns(runs) {
   });
 }
 
-stravaToAirTable(10);
+stravaToAirTable(30);

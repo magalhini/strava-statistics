@@ -23,7 +23,29 @@ function clockTime(secs) {
   return pad(hours) + ':' + pad(minutes) + ':' + pad(secs);
 }
 
+function getInBrackets(string) {
+  const matches = string.match(/\[(.*?)\]/);
+
+  if (matches) {
+    return submatch = matches[1];
+  }
+
+  return null;
+}
+
+function getInCurly(string) {
+  const matches = string.match(/\{(.*?)\}/);
+
+  if (matches) {
+    return submatch = matches[1];
+  }
+
+  return null;
+}
+
 module.exports = {
   metersSecondToMinuteKm,
-  secondsToClock
+  secondsToClock,
+  getInBrackets,
+  getInCurly,
 };

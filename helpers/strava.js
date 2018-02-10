@@ -8,7 +8,8 @@ const isEmoji = (char) => {
 const EMOJI_CONDITIONS = {
   10052: 'Snow',
   127783: 'Rain',
-  9731: 'Snowstorm'
+  9731: 'Snowing',
+  'tarmac': 'Tarmac'
 };
 
 const getHRData = ({has_heartrate, max_heartrate = 0, average_heartrate = 0}) => {
@@ -18,14 +19,22 @@ const getHRData = ({has_heartrate, max_heartrate = 0, average_heartrate = 0}) =>
   };
 }
 
-const getConditions = (name) => {
-  const split = name.split(' ');
+const getConditions = (name, description = '') => {
+  const splitName = name.split(' ');
+  const splitDescription = description.split(' ');
+  const all = splitName.concat(splitDescription);
 
-  return split.reduce((acc, char) => {
-    const charPoint = char.codePointAt(0);
+  return all.reduce((acc, string) => {
+    const charPoint = string.codePointAt(0);
+
     if (EMOJI_CONDITIONS[charPoint]) {
       acc.push(EMOJI_CONDITIONS[charPoint]);
     }
+
+    if (EMOJI_CONDITIONS[string]) {
+      acc.push(EMOJI_CONDITIONS[string])
+    }
+
     return acc;
   }, []);
 };
