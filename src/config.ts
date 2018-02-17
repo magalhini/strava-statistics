@@ -1,5 +1,8 @@
-const fetch = require('node-fetch');
-const env = require('dotenv').config();
+import fetch from 'node-fetch';
+import env from 'dotenv';
+
+env.config();
+
 const config = {
   code: process.env.STRAVA_CODE,
   client_id: process.env.STRAVA_CLIENT_ID,
@@ -16,6 +19,4 @@ function authorize() {
     .then(json => { process.env.STRAVA_ACCESS_TOKEN = json.access_token })
 }
 
-module.exports = {
-  authorize
-};
+export { authorize };

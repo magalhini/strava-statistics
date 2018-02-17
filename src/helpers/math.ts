@@ -4,7 +4,7 @@ const Units = Object.freeze({
 
 const metersSecondToMinuteKm = (ms) => {
   const pace = Units.mps / ms;
-  return `${Math.round(pace)}:${pad(((pace % 1) * 60).toFixed(0))}`;
+  return `${Math.floor(pace)}:${pad(((pace % 1) * 60).toFixed(0))}`;
 };
 
 const secondsToClock = (seconds) => {
@@ -27,7 +27,7 @@ function getInBrackets(string) {
   const matches = string.match(/\[(.*?)\]/);
 
   if (matches) {
-    return submatch = matches[1];
+    return matches[1];
   }
 
   return null;
@@ -37,7 +37,7 @@ function getInCurly(string) {
   const matches = string.match(/\{(.*?)\}/);
 
   if (matches) {
-    return submatch = matches[1];
+    return matches[1];
   }
 
   return null;

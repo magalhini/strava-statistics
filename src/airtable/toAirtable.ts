@@ -1,15 +1,13 @@
-const authorize = require('../config').authorize;
-const env = require('dotenv').config({ path: '../.env' });
+import { authorize } from '../config'
+const env = require('dotenv').config({ path: '.env' });
 const strava = require('strava-v3');
 const Airtable = require('airtable');
 const helpers = require('../helpers/math');
-const stravaHelpers = require('../helpers/strava');
+import { BASES, RUN_TYPES, EFFORT_TYPES } from '../data';
+import { getConditions, getHRData } from '../helpers/strava';
 const data = require('../data/');
 const defaults = require('./defaults');
-
 const base = new Airtable({ apiKey: process.env.AIRTABLE_KEY }).base('appbnk2iyitU1firD');
-const { getConditions, getHRData } = stravaHelpers;
-const { BASES, RUN_TYPES, EFFORT_TYPES } = data;
 
 function getRunType(type, name: string) {
   const isGroup = name && name.indexOf('Group') > -1;
@@ -41,13 +39,8 @@ function getLocation(name: string) {
   return customLocation ? customLocation : defaults.location;
 }
 
-function stravaToAirTable(howMany = 1) {
-  console.log(`Fetching last ${howMany} runs from Strava into Airtable...`);
-  getFromStrava(howMany)
-    .then(insertNewRuns);
-}
-
-function getFromStrava(max:number = 2): Promise<Array> {
+function getFromStrava(max:number = 2) {
+  console.log(`Fetching last ${max} runs from Strava into Airtable...`);
   return new Promise((resolve, reject) => {
     strava.athlete.listActivities({ page: 1, per_page: max }, (err, payload) =>
       err ? reject(err) : resolve(payload)
@@ -55,7 +48,7 @@ function getFromStrava(max:number = 2): Promise<Array> {
   });
 }
 
-function insertNewRuns(ids:Array<number>, runs) {
+function insertNewRuns(ids: Array<number>, runs) {
   const inserts = runs.map(run => {
     const {
       id, name, distance, total_elevation_gain,
@@ -63,11 +56,12 @@ function insertNewRuns(ids:Array<number>, runs) {
       has_heartrate, suffer_score
     } = run;
 
-    if (ids.includes(id)) console.log('ID already exists')
+    if (ids.includes(id)) {
+      console.log('ID already exists, skipping...');
+      return;
+    }
 
-    return
-
-    base(BASES.WORKOUTS).create({
+    const workout:Workout = {
       'ID': id,
       'Name': name,
       'Conditions': getConditions(name),
@@ -82,15 +76,16 @@ function insertNewRuns(ids:Array<number>, runs) {
       'Average HR': getHRData(run).avgHR,
       'Max HR': getHRData(run).maxHR,
       'Suffer Score': suffer_score || 0,
-    }, ((err, record) => {
+    }
+
+    base(BASES.WORKOUTS).create(workout, ((err, record) => {
       if (err) return console.log(err);
       console.log(`Record saved! ${record.getId()}, ${name}`);
     }))
   });
 }
 
-// stravaToAirTable(30);
 Promise.all([
-  getAllIds(30),
-  getFromStrava(30)
+  getAllIds(50),
+  getFromStrava(defaults.runsToFetch)
 ]).then(values => insertNewRuns(values[0], values[1]));

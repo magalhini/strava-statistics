@@ -5,21 +5,20 @@ const isEmoji = (char) => {
   return regex.test(char);
 };
 
-const EMOJI_CONDITIONS = {
+const EMOJI_CONDITIONS: EmojiConditions = {
   10052: 'Snow',
   127783: 'Rain',
   9731: 'Snowing',
-  'tarmac': 'Tarmac'
 };
 
-const getHRData = ({has_heartrate, max_heartrate = 0, average_heartrate = 0}) => {
+const getHRData = ({max_heartrate = 0, average_heartrate = 0}) => {
   return {
     maxHR: max_heartrate,
     avgHR: average_heartrate
   };
 }
 
-const getConditions = (name, description = '') => {
+const getConditions = (name: string, description :string = '' ) => {
   const splitName = name.split(' ');
   const splitDescription = description.split(' ');
   const all = splitName.concat(splitDescription);
@@ -48,9 +47,4 @@ const updateTitle = (activity, newTitle) => {
   }, (done, err) => console.log(`Activity ${activity.id}'s title updated with ${newTitle}`))
 }
 
-module.exports = {
-  isEmoji,
-  updateTitle,
-  getConditions,
-  getHRData
-};
+export { isEmoji, updateTitle, getConditions, getHRData };

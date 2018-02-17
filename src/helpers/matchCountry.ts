@@ -1,4 +1,5 @@
-const fetch = require('node-fetch');
+import fetch from 'node-fetch';
+
 const URI = (lat, lng) => `http://api.geonames.org/countryCodeJSON?lat=${lat}&lng=${lng}&username=magalhini`;
 
 const getCountryFromCoords = (coords) => {
