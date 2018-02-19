@@ -38,7 +38,7 @@ const getConditions = (name: string, description :string = '' ) => {
   }, []);
 };
 
-const updateTitle = (activity, newTitle) => {
+const updateTitle = (activity: Run, newTitle: string) => {
   if (!activity || !newTitle) return null;
 
   strava.activities.update({

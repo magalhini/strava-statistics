@@ -19,11 +19,11 @@ type EmojiConditions = {
   9731: string,
 };
 
-type Workout = {
+interface Workout {
   'ID': number,
   'Name': string,
   'Conditions': string | Array<string>,
-  'Type': string
+  'Type': string | Array<string>,
   'Distance': number,
   'Speed': string,
   'Time': string,
@@ -34,4 +34,19 @@ type Workout = {
   'Average HR': number,
   'Max HR': number,
   'Suffer Score': number
+}
+
+type Run = {
+  id: number,
+  name: string,
+  distance: number,
+  total_elevation_gain: number,
+  start_date: Date,
+  average_speed: number,
+  workout_type: RunTypes,
+  moving_time: number,
+  max_heartrate: number,
+  average_heartrate: number,
+  has_heartrate: boolean,
+  suffer_score: number,
 }

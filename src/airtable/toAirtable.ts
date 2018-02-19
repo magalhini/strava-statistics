@@ -9,7 +9,7 @@ const data = require('../data/');
 const defaults = require('./defaults');
 const base = new Airtable({ apiKey: process.env.AIRTABLE_KEY }).base('appbnk2iyitU1firD');
 
-function getRunType(type, name: string) {
+function getRunType(type: any, name: string): string[] {
   const isGroup = name && name.indexOf('Group') > -1;
   return [
     ...(isGroup ? [RUN_TYPES['group']] : []), RUN_TYPES[type]
@@ -26,7 +26,7 @@ const getAllIds = (n: number = 1): Promise<number[]> => {
     }, (err) => {
       if (err) reject(err);
     });
-  })
+  });
 }
 
 function getRunEffort(name: string) {
@@ -39,7 +39,7 @@ function getLocation(name: string) {
   return customLocation ? customLocation : defaults.location;
 }
 
-function getFromStrava(max:number = 2) {
+function getFromStrava(max:number = 2): Promise<Run> {
   console.log(`Fetching last ${max} runs from Strava into Airtable...`);
   return new Promise((resolve, reject) => {
     strava.athlete.listActivities({ page: 1, per_page: max }, (err, payload) =>
@@ -48,13 +48,13 @@ function getFromStrava(max:number = 2) {
   });
 }
 
-function insertNewRuns(ids: Array<number>, runs) {
+function insertNewRuns(ids: any, runs: Array<Run>) {
   const inserts = runs.map(run => {
     const {
       id, name, distance, total_elevation_gain,
       start_date, average_speed, workout_type, moving_time,
       has_heartrate, suffer_score
-    } = run;
+    }: Run = run;
 
     if (ids.includes(id)) {
       console.log('ID already exists, skipping...');
