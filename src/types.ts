@@ -3,7 +3,11 @@ type RunTypes = {
   1: string,
   2: string,
   3: string,
+};
+
+type RunTags = {
   group: string,
+  exercises: string,
 };
 
 type EffortTypes = {
@@ -17,13 +21,14 @@ type EmojiConditions = {
   10052: string,
   127783: string,
   9731: string,
+  8597: string,
 };
 
 interface Workout {
   'ID': number,
   'Name': string,
   'Conditions': string | Array<string>,
-  'Type': string | Array<string>,
+  'Type': Array<string>,
   'Distance': number,
   'Speed': string,
   'Time': string,

@@ -3,17 +3,20 @@ const env = require('dotenv').config({ path: '.env' });
 const strava = require('strava-v3');
 const Airtable = require('airtable');
 const helpers = require('../helpers/math');
-import { BASES, RUN_TYPES, EFFORT_TYPES } from '../data';
+import { BASES, RUN_TYPES, EFFORT_TYPES, RUN_TAGS } from '../data';
 import { getConditions, getHRData } from '../helpers/strava';
 const data = require('../data/');
 const defaults = require('./defaults');
 const base = new Airtable({ apiKey: process.env.AIRTABLE_KEY }).base('appbnk2iyitU1firD');
 
-function getRunType(type: any, name: string): string[] {
-  const isGroup = name && name.indexOf('Group') > -1;
-  return [
-    ...(isGroup ? [RUN_TYPES['group']] : []), RUN_TYPES[type]
-  ];
+function getRunType(type: string, name: string): string[] {
+  const runType = RUN_TYPES[type];
+  const runTag = Object
+    .keys(RUN_TAGS)
+    .filter(tag => name.toLowerCase().indexOf(tag) > -1 && RUN_TAGS[tag]);
+
+  return [runType, ...runTag];
+  // return [...(isGroup ? [RUN_TYPES['group']] : []), RUN_TYPES[type]];
 }
 
 const getAllIds = (n: number = 1): Promise<number[]> => {
@@ -39,16 +42,16 @@ function getLocation(name: string) {
   return customLocation ? customLocation : defaults.location;
 }
 
-function getFromStrava(max:number = 2): Promise<Run> {
+function getFromStrava(max:number = 2): Promise<{}> {
   console.log(`Fetching last ${max} runs from Strava into Airtable...`);
   return new Promise((resolve, reject) => {
-    strava.athlete.listActivities({ page: 1, per_page: max }, (err, payload) =>
+    strava.athlete.listActivities({ page: 1, per_page: max }, (err: string, payload: Run) =>
       err ? reject(err) : resolve(payload)
     )
   });
 }
 
-function insertNewRuns(ids: any, runs: Array<Run>) {
+function insertNewRuns(ids: any, runs: Run[]) {
   const inserts = runs.map(run => {
     const {
       id, name, distance, total_elevation_gain,

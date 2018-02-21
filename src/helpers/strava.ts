@@ -9,6 +9,7 @@ const EMOJI_CONDITIONS: EmojiConditions = {
   10052: 'Snow',
   127783: 'Rain',
   9731: 'Snowing',
+  8597: 'Treadmill',
 };
 
 const getHRData = ({max_heartrate = 0, average_heartrate = 0}) => {
