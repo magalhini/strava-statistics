@@ -43,6 +43,7 @@ interface Workout {
 
 type Run = {
   id: number,
+  type: string,
   name: string,
   distance: number,
   total_elevation_gain: number,

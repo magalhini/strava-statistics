@@ -56,11 +56,14 @@ function insertNewRuns(ids: any, runs: Run[]) {
     const {
       id, name, distance, total_elevation_gain,
       start_date, average_speed, workout_type, moving_time,
-      has_heartrate, suffer_score
+      has_heartrate, suffer_score, type
     }: Run = run;
 
     if (ids.includes(id)) {
       console.log('ID already exists, skipping...');
+      return;
+    } else if (type !== 'Run') {
+      console.log('This is not a run, skipping...');
       return;
     }
 
