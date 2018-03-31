@@ -32,6 +32,10 @@ function getInBrackets(string: string): string {
   return null;
 }
 
+function calculateHRReserve({rest, sessionAvg, sessionMax, max}) {
+  return Math.round((sessionAvg - rest) / (max - rest) * 100);
+}
+
 function getInCurly(string: string): string {
   const matches = string.match(/\{(.*?)\}/);
 
@@ -46,4 +50,5 @@ module.exports = {
   secondsToClock,
   getInBrackets,
   getInCurly,
+  calculateHRReserve,
 };

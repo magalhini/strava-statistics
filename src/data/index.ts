@@ -10,7 +10,7 @@ const RUN_TYPES: RunTypes = Object.freeze({
 });
 
 const RUN_TAGS: RunTags = Object.freeze({
-  group: 'Group Run',
+  Group: 'Group Run',
   exercises: 'Exercises',
 });
 
@@ -22,4 +22,3 @@ const EFFORT_TYPES: EffortTypes = Object.freeze({
 });
 
 export { BASES, RUN_TYPES, EFFORT_TYPES, RUN_TAGS };
-

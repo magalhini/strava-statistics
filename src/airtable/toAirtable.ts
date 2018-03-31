@@ -6,7 +6,7 @@ const helpers = require('../helpers/math');
 import { BASES, RUN_TYPES, EFFORT_TYPES, RUN_TAGS } from '../data';
 import { getConditions, getHRData } from '../helpers/strava';
 const data = require('../data/');
-const defaults = require('./defaults');
+const { defaults, heartRateData } = require('./defaults');
 const base = new Airtable({ apiKey: process.env.AIRTABLE_KEY }).base('appbnk2iyitU1firD');
 
 function getRunType(type: string, name: string): string[] {
@@ -51,6 +51,17 @@ function getFromStrava(max:number = 2): Promise<{}> {
   });
 }
 
+function _prepareHRData(session) {
+  const data = {
+    rest: heartRateData.rest,
+    max: heartRateData.max,
+    sessionAvg: getHRData(session).avgHR,
+    sessionMax: getHRData(session).maxHR,
+  };
+
+  return helpers.calculateHRReserve(data);
+}
+
 function insertNewRuns(ids: any, runs: Run[]) {
   const inserts = runs.map(run => {
     const {
@@ -82,7 +93,8 @@ function insertNewRuns(ids: any, runs: Run[]) {
       'Average HR': getHRData(run).avgHR,
       'Max HR': getHRData(run).maxHR,
       'Suffer Score': suffer_score || 0,
-    }
+      'HR Reserve': has_heartrate ? _prepareHRData(run) : 0,
+    };
 
     base(BASES.WORKOUTS).create(workout, ((err, record) => {
       if (err) return console.log(err);

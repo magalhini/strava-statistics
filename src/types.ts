@@ -5,6 +5,11 @@ type RunTypes = {
   3: string,
 };
 
+type HeartRate = {
+  rest: number,
+  max: number;
+};
+
 type RunTags = {
   group: string,
   exercises: string,
@@ -38,7 +43,8 @@ interface Workout {
   'Elevation': number,
   'Average HR': number,
   'Max HR': number,
-  'Suffer Score': number
+  'Suffer Score': number,
+  'HR Reserve': number,
 }
 
 type Run = {

@@ -12,7 +12,7 @@ const EMOJI_CONDITIONS: EmojiConditions = {
   8597: 'Treadmill',
 };
 
-const getHRData = ({max_heartrate = 0, average_heartrate = 0}) => {
+const getHRData = ({max_heartrate = null, average_heartrate = null}) => {
   return {
     maxHR: max_heartrate,
     avgHR: average_heartrate
